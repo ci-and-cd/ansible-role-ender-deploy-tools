@@ -86,8 +86,9 @@
       name=docker-engine=1.12.6-0~ubuntu-trusty
       #update_cache=yes
 
-#- name: Download docker-machine
-#  shell: aria2c --file-allocation=none -c -x 10 -s 10 -m 0 --console-log-level=notice --log-level=notice --summary-interval=0 -d /usr/local/bin -o docker-machine https://github.com/docker/machine/releases/download/v0.12.0/docker-machine-Linux-x86_64
+- name: Download docker-machine
+  when: install_docker_machine
+  shell: aria2c --file-allocation=none -c -x 10 -s 10 -m 0 --console-log-level=notice --log-level=notice --summary-interval=0 -d /usr/local/bin -o docker-machine https://github.com/docker/machine/releases/download/v0.12.0/docker-machine-Linux-x86_64
 #  get_url:
 #    checksum: sha256:C4568BB0B0F5A48B57D9D034A441F445004C81B69C2F571AEFCA46862400EAAF
 #    url: https://github.com/docker/machine/releases/download/v0.12.0/docker-machine-Linux-x86_64
@@ -95,8 +96,9 @@
 #    mode: 0755
 #    timeout: 30
 
-#- name: Download docker-compose
-#  shell: aria2c --file-allocation=none -c -x 10 -s 10 -m 0 --console-log-level=notice --log-level=notice --summary-interval=0 -d /usr/local/bin -o docker-compose https://github.com//docker/compose/releases/download/1.13.0/docker-compose-Linux-x86_64
+- name: Download docker-compose
+  when: install_docker_compose
+  shell: aria2c --file-allocation=none -c -x 10 -s 10 -m 0 --console-log-level=notice --log-level=notice --summary-interval=0 -d /usr/local/bin -o docker-compose https://github.com//docker/compose/releases/download/1.13.0/docker-compose-Linux-x86_64
 #  get_url:
 #    checksum: sha256:0D8AF4D3336B0B41361C06FF213BE5C42E2247BEB746DBC597803E862AF127E8
 #    url: https://github.com//docker/compose/releases/download/1.13.0/docker-compose-Linux-x86_64
@@ -119,3 +121,8 @@
       state=present
   with_items: docker_users
   when: docker_users is defined
+
+- name: Create oss-network
+  docker_network:
+    name: oss-network
+  when: create_oss_network

@@ -56,3 +56,5 @@ git push -u origin master
 ansible-galaxy login --github-token ${GITHUB_INFRASTRUCTURE_CONF_GIT_TOKEN}
 ansible-galaxy import <owner,org> ansible-role-<role-name>
 ```
+
+see: https://docs.ansible.com/ansible/galaxy.html
