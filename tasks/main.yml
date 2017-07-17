@@ -1,0 +1,121 @@
+---
+# tasks file for oss-docker-install
+
+- name: Fail if OS distro is not Ubuntu 14.04
+  fail:
+      msg="The role is designed only for Ubuntu 14.04"
+  when: "{{ ansible_distribution_version | version_compare('14.04', '!=') }}"
+
+# The docker_container and docker_image module in Ansible
+# requires docker-py library to be installed on the remote server,
+# so at first we use python-pip to install docker-py library on all servers before installing the Docker:
+
+# see: https://github.com/ansible/ansible-modules-core/issues/2951
+
+- name: Update apt cache using apt module
+  apt: update_cache=yes cache_valid_time=7200
+  delay: 1
+  ignore_errors: yes
+  register: apt_result
+  retries: 3
+  sudo: yes
+  until: apt_result|success
+
+- name: Clean apt cache when apt module failed
+  shell: rm -vrf /var/lib/apt/lists/*; apt-get clean
+  sudo: yes
+  when: apt_result|failed
+
+- name: Retry if needed using command apt-get update
+  command: apt-get update
+  ignore_errors: yes
+  sudo: yes
+  when: apt_result|failed
+
+- name: Install dependencies
+  apt:
+      name={{ item }}
+      #update_cache=yes
+  with_items:
+      - aria2
+      - python-dev
+      - python-setuptools
+
+- name: Install pip
+  easy_install:
+      name=pip
+
+- name: Install docker-py
+  pip:
+      state=present
+      name=docker
+      version=2.4.2
+      #name=docker-py
+      #version=1.10.6
+
+# Import the Docker apt repo and install Docker:
+- name: Add docker apt repo
+  apt_repository:
+      repo='deb https://apt.dockerproject.org/repo ubuntu-{{ ansible_distribution_release }} main'
+      state=present
+
+- name: Import the Docker repository key
+  apt_key:
+      url=https://apt.dockerproject.org/gpg
+      state=present
+      id=2C52609D
+
+- name: Test docker-engine installed
+  shell: dpkg-query -W 'docker-engine' | grep 1.12.6-0~ubuntu-trusty
+  ignore_errors: yes
+  register: is_docker_engine
+
+- name: Clean apt cache for docker repository
+  shell: rm -vrf /var/lib/apt/lists/*; apt-get clean
+  sudo: yes
+  when: is_docker_engine|failed
+
+- name: Update apt cache for docker repository
+  ignore_errors: yes
+  shell: apt-get update
+  sudo: yes
+  when: is_docker_engine|failed
+
+- name: Install Docker package
+  apt:
+      name=docker-engine=1.12.6-0~ubuntu-trusty
+      #update_cache=yes
+
+#- name: Download docker-machine
+#  shell: aria2c --file-allocation=none -c -x 10 -s 10 -m 0 --console-log-level=notice --log-level=notice --summary-interval=0 -d /usr/local/bin -o docker-machine https://github.com/docker/machine/releases/download/v0.12.0/docker-machine-Linux-x86_64
+#  get_url:
+#    checksum: sha256:C4568BB0B0F5A48B57D9D034A441F445004C81B69C2F571AEFCA46862400EAAF
+#    url: https://github.com/docker/machine/releases/download/v0.12.0/docker-machine-Linux-x86_64
+#    dest: /usr/local/bin/docker-machine
+#    mode: 0755
+#    timeout: 30
+
+#- name: Download docker-compose
+#  shell: aria2c --file-allocation=none -c -x 10 -s 10 -m 0 --console-log-level=notice --log-level=notice --summary-interval=0 -d /usr/local/bin -o docker-compose https://github.com//docker/compose/releases/download/1.13.0/docker-compose-Linux-x86_64
+#  get_url:
+#    checksum: sha256:0D8AF4D3336B0B41361C06FF213BE5C42E2247BEB746DBC597803E862AF127E8
+#    url: https://github.com//docker/compose/releases/download/1.13.0/docker-compose-Linux-x86_64
+#    dest: /usr/local/bin/docker-compose
+#    mode: 0755
+#    timeout: 30
+
+# Create a system group for Docker
+# and add any user defined in “docker_users” variable to this group,
+# and it will copy template for Docker configuration then restart Docker.
+- name: Create a docker group
+  group:
+      name=docker
+      state=present
+
+- name: Add user(s) to docker group
+  user:
+      name={{ item }}
+      group=docker
+      state=present
+  with_items: docker_users
+  when: docker_users is defined
