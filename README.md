@@ -50,9 +50,9 @@ git init
 git add .
 git commit -m 'init commit'
 
-git remote add origin git@github.com:<owner,org>/ansible-role-oss-docker-install.git
+git remote add origin git@github.com:<owner,org>/ansible-role-<role-name>.git
 git push -u origin master
 
 ansible-galaxy login --github-token ${GITHUB_INFRASTRUCTURE_CONF_GIT_TOKEN}
-ansible-galaxy import github_user github_repo
+ansible-galaxy import <owner,org> ansible-role-<role-name>
 ```
