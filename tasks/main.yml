@@ -106,6 +106,12 @@
 #    mode: 0755
 #    timeout: 30
 
+- name: Install pip docker-compose
+  pip:
+      state=present
+      name=docker-compose
+      version=1.13.0
+
 # Create a system group for Docker
 # and add any user defined in “docker_users” variable to this group,
 # and it will copy template for Docker configuration then restart Docker.
