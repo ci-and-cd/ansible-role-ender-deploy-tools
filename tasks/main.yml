@@ -91,6 +91,7 @@
   register: usr_local_bin_docker_machine
 
 #- debug: msg="{{ ansible_hostname }} usr_local_bin_docker_machine.stat.md5 {{ usr_local_bin_docker_machine.stat.md5 }}"
+#  when: usr_local_bin_docker_machine.stat.exists
 
 - set_fact:
     docker_machine_miss_match: "{{ usr_local_bin_docker_machine.stat.md5 != 'cb7b98ebd5677f30cc527e4dcbd618b1' }}"
@@ -111,6 +112,7 @@
   register: usr_local_bin_docker_compose
 
 #- debug: msg="{{ ansible_hostname }} usr_local_bin_docker_compose.stat.md5 {{ usr_local_bin_docker_compose.stat.md5 }}"
+#  when: usr_local_bin_docker_compose.stat.exists
 
 - set_fact:
     docker_compose_miss_match: "{{ usr_local_bin_docker_compose.stat.md5 != '13196d9b1c3f3be0964b7536c39348b5' }}"
