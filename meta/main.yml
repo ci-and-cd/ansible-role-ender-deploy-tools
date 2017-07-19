@@ -38,7 +38,7 @@ galaxy_info:
     - trusty
     - xenial
     #- zesty
-  - name: CentOS
+  - name: EL # CentOS
     versions:
     - 7
   # - name: Fedora
