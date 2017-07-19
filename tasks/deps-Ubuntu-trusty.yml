@@ -2,9 +2,12 @@
 # see: https://github.com/ansible/ansible/issues/12161
 - name: Find python version
   shell: python --version 2>&1 | awk '{print $2}'
+  register: python_version
+
+- debug: msg="python_version {{ python_version.stdout }}"
 
 - name: Test python >= 2.7.9 installed
-  shell: "[ \"{{ python_version }}\" = \"$(echo -e {{ python_version }}\n2.7.9 | sort -V | head -n1)\" ] || exit 1"
+  shell: dpkg --compare-versions {{ python_version.stdout }} ge 2.7.9
   ignore_errors: yes
   register: is_python_version_ok
 
