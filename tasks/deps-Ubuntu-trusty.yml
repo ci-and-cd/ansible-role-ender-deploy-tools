@@ -1,0 +1,31 @@
+---
+# see: https://github.com/ansible/ansible/issues/12161
+- include: "deps-{{ ansible_os_family }}.yml"
+  static: no
+
+# Add apt keys
+- name: add key for ppa python repository
+  apt_key: keyserver=keyserver.ubuntu.com id=DB82666C state=present
+  become: yes
+  become_user: root
+  become_method: sudo
+
+# Add extra repositories
+- name: Add ppa python repository
+  apt_repository: repo='deb http://ppa.launchpad.net/fkrull/deadsnakes-python2.7/ubuntu {{ ansible_distribution_release }} main' state=present update_cache=yes
+  become: yes
+  become_user: root
+  become_method: sudo
+
+- include: "apt-get-update.yml"
+  static: no
+
+# Update python version
+- name: ensure python2.7 latest  is installed
+  apt:
+    pkg: python2.7
+    state: latest
+    install_recommends: no
+  become: yes
+  become_user: root
+  become_method: sudo

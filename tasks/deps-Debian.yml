@@ -1,0 +1,16 @@
+---
+- include: "apt-get-update.yml"
+  static: no
+
+- name: Install dependencies by apt
+  apt:
+      name={{ item }}
+      #update_cache=yes
+  with_items:
+      - apt-transport-https
+      - aria2
+      - ca-certificates
+      - curl
+      - python-dev
+      - python-setuptools
+      - software-properties-common

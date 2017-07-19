@@ -1,0 +1,22 @@
+---
+- name: Add EPEL YUM repository
+  yum_repository:
+    name: epel
+    description: EPEL YUM repo
+    baseurl: https://download.fedoraproject.org/pub/epel/$releasever/$basearch/
+    gpgkey: https://getfedora.org/static/352C64E5.txt
+    gpgcheck: yes
+    # see: https://getfedora.org/keys/
+
+- name: Install dependencies by yum
+  yum:
+      name={{ item }}
+      update_cache=yes
+  with_items:
+  - device-mapper-persistent-data
+  - aria2
+  - curl
+  - lvm2
+  - python-devel
+  - python-setuptools
+  - yum-utils

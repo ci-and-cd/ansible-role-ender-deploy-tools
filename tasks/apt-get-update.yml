@@ -1,0 +1,21 @@
+---
+# see: https://github.com/ansible/ansible-modules-core/issues/2951
+- name: Update apt cache using apt module
+  apt: update_cache=yes cache_valid_time=7200
+  delay: 1
+  ignore_errors: yes
+  register: apt_result
+  retries: 3
+  sudo: yes
+  until: apt_result|success
+
+- name: Clean apt cache when apt module failed
+  shell: rm -vrf /var/lib/apt/lists/*; apt-get clean
+  sudo: yes
+  when: apt_result|failed
+
+- name: Retry if needed using command apt-get update
+  command: apt-get update
+  ignore_errors: yes
+  sudo: yes
+  when: apt_result|failed

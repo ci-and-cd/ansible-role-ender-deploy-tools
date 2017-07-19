@@ -36,16 +36,15 @@ galaxy_info:
   - name: Ubuntu
     versions:
     - trusty
+    - xenial
+    #- zesty
+  - name: CentOS
+    versions:
+    - 7
   # - name: Fedora
   #   versions:
   #   - all
   #   - 25
-  # - name: SomePlatform
-  #   versions:
-  #   - all
-  #   - 1.0
-  #   - 7
-  #   - 99.99
 
   galaxy_tags:
   - docker

@@ -1,0 +1,21 @@
+---
+# tasks file for oss-docker-install
+
+- name: Add docker-engine yum repo (yum.dockerproject.org)
+  yum_repository:
+    name: docker-engine
+    description: docker-engine yum repo
+    baseurl: https://yum.dockerproject.org/repo/main/centos/$releasever/
+    gpgkey: https://yum.dockerproject.org/gpg
+    gpgcheck: yes
+
+# find versions by `yum list available docker-engine --showduplicates`
+- name: Install docker-engine package
+  yum:
+    name: docker-engine-1.12.6
+    state: present
+    update_cache: yes
+
+- name: Start docker-engine service
+  shell: systemctl start docker.service
+  sudo: yes
