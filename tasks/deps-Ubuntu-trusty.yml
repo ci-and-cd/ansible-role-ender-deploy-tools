@@ -1,7 +1,12 @@
 ---
 # see: https://github.com/ansible/ansible/issues/12161
-- include: "deps-{{ ansible_os_family }}.yml"
-  static: no
+- name: Find python version
+  shell: python --version 2>&1 | awk '{print $2}'
+
+- name: Test python >= 2.7.9 installed
+  shell: "[ \"{{ python_version }}\" = \"$(echo -e {{ python_version }}\n2.7.9 | sort -V | head -n1)\" ] || exit 1"
+  ignore_errors: yes
+  register: is_python_version_ok
 
 # Add apt keys
 - name: add key for ppa python repository
@@ -9,16 +14,26 @@
   become: yes
   become_user: root
   become_method: sudo
+  when: is_python_version_ok|failed
 
 # Add extra repositories
 - name: Add ppa python repository
-  apt_repository: repo='deb http://ppa.launchpad.net/fkrull/deadsnakes-python2.7/ubuntu {{ ansible_distribution_release }} main' state=present update_cache=yes
+  apt_repository: repo='deb http://ppa.launchpad.net/fkrull/deadsnakes-python2.7/ubuntu {{ ansible_distribution_release }} main' state=present #update_cache=yes
   become: yes
   become_user: root
   become_method: sudo
+  when: is_python_version_ok|failed
 
-- include: "apt-get-update.yml"
-  static: no
+- name: Clean apt cache for ppa repository
+  shell: rm -vrf /var/lib/apt/lists/*; apt-get clean
+  sudo: yes
+  when: is_python_version_ok|failed
+
+- name: Update apt cache for ppa repository
+  ignore_errors: yes
+  shell: apt-get update || apt-get update
+  sudo: yes
+  when: is_python_version_ok|failed
 
 # Update python version
 - name: ensure python2.7 latest  is installed
@@ -29,3 +44,4 @@
   become: yes
   become_user: root
   become_method: sudo
+  when: is_python_version_ok|failed

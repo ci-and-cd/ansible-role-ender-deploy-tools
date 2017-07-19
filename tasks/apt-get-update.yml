@@ -15,7 +15,7 @@
   when: apt_result|failed
 
 - name: Retry if needed using command apt-get update
-  command: apt-get update
+  shell: apt-get update || apt-get update
   ignore_errors: yes
   sudo: yes
   when: apt_result|failed

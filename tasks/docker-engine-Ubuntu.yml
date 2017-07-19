@@ -44,7 +44,7 @@
 
 - name: Update apt cache for docker repository
   ignore_errors: yes
-  shell: apt-get update
+  shell: apt-get update || apt-get update
   sudo: yes
   when: is_docker_engine|failed
 
