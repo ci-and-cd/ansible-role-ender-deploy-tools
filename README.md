@@ -6,7 +6,7 @@ Install docker.
 Requirements
 ------------
 
-ubuntu 14.04 only for now.
+Ubuntu trusty (14.04), Ubuntu xenial (16.04), CentOS 7.
 
 Role Variables
 --------------
