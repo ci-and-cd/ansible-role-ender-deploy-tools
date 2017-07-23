@@ -12,6 +12,7 @@
     docker_machine_miss_match: "{{ usr_local_sbin_docker_machine.stat.md5 != 'cb7b98ebd5677f30cc527e4dcbd618b1' }}"
   when: usr_local_sbin_docker_machine.stat.exists
 
+# url: https://github.com/docker/machine/releases/download/<version>/docker-machine-`uname -s`-`uname -m`
 - name: Download docker-machine
   when: (install_docker_machine | bool) and ( not usr_local_sbin_docker_machine.stat.exists or docker_machine_miss_match )
   shell: aria2c --file-allocation=none -c -x 10 -s 10 -m 0 --console-log-level=notice --log-level=notice --summary-interval=0 -d /usr/local/sbin -o docker-machine https://github.com/docker/machine/releases/download/v0.12.0/docker-machine-Linux-x86_64

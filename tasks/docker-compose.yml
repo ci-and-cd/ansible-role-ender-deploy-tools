@@ -12,6 +12,7 @@
     docker_compose_miss_match: "{{ usr_local_sbin_docker_compose.stat.md5 != '13196d9b1c3f3be0964b7536c39348b5' }}"
   when: usr_local_sbin_docker_compose.stat.exists
 
+# url: https://github.com/docker/compose/releases/download/<version>/docker-compose-`uname -s`-`uname -m`
 - name: Download docker-compose
   when: (install_docker_compose | bool) and ( not usr_local_sbin_docker_compose.stat.exists or docker_compose_miss_match )
   shell: aria2c --file-allocation=none -c -x 10 -s 10 -m 0 --console-log-level=notice --log-level=notice --summary-interval=0 -d /usr/local/sbin -o docker-compose https://github.com//docker/compose/releases/download/1.13.0/docker-compose-Linux-x86_64
