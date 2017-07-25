@@ -53,7 +53,7 @@
   with_items: docker_users
   when: docker_users is defined
 
-#- name: Create oss-network
-#  docker_network:
-#    name: oss-network
-#  when: create_oss_network
+- name: Create oss-network
+  docker_network:
+    name: oss-network
+  when: create_oss_network
