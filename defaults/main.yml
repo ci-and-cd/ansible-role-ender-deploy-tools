@@ -3,4 +3,4 @@
 
 install_docker_compose: yes
 install_docker_machine: yes
-create_oss_network: yes
+create_oss_network: no
