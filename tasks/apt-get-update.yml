@@ -10,7 +10,7 @@
   until: apt_result|success
 
 - name: Clean apt cache when apt module failed
-  shell: rm -vrf /var/lib/apt/lists/*; apt-get clean
+  shell: apt-get update --fix-missing; rm -vrf /var/lib/apt/lists/*; mkdir /var/lib/apt/lists/partial; apt-get clean -y
   sudo: yes
   when: apt_result|failed
 

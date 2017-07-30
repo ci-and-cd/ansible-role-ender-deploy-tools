@@ -38,7 +38,7 @@
   register: is_docker_engine
 
 - name: Clean apt cache for docker repository
-  shell: rm -vrf /var/lib/apt/lists/*; apt-get clean
+  shell: apt-get update --fix-missing; rm -vrf /var/lib/apt/lists/*; mkdir /var/lib/apt/lists/partial; apt-get clean -y
   sudo: yes
   when: is_docker_engine|failed
 
