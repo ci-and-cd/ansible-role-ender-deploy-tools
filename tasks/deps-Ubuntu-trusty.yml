@@ -28,13 +28,17 @@
   when: is_python_version_ok|failed
 
 - name: Clean apt cache for ppa repository
-  shell: rm -vrf /var/lib/apt/lists/*; apt-get clean
+  shell: "{{ item }}"
+  with_items:
+  - "apt-get clean"
+  - "rm -vrf /var/lib/apt/lists/*"
+  - "mkdir /var/lib/apt/lists/partial"
   sudo: yes
   when: is_python_version_ok|failed
 
 - name: Update apt cache for ppa repository
   ignore_errors: yes
-  shell: apt-get update || apt-get update
+  shell: apt-get update
   sudo: yes
   when: is_python_version_ok|failed
 

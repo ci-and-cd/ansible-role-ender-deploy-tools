@@ -6,12 +6,6 @@
 #      msg="The role is designed only for Ubuntu 14.04"
 #  when: "{{ ansible_distribution_version | version_compare('14.04', '!=') }}"
 
-- name: Add docker-ce apt repo (download.docker.com)
-  apt_repository:
-      repo='deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable'
-      state=present
-  when: ansible_architecture == "x86_64"
-
 # curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 - name: Import the docker-ce repository key of download.docker.com
   apt_key:
@@ -19,18 +13,24 @@
       state=present
       url=https://download.docker.com/linux/ubuntu/gpg
 
+- name: Add docker-ce apt repo (download.docker.com)
+  apt_repository:
+      repo='deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable'
+      state=present
+  when: ansible_architecture == "x86_64"
+
 
 # Import the Docker apt repo and install Docker:
-- name: Add docker-engine apt repo (apt.dockerproject.org)
-  apt_repository:
-      repo='deb https://apt.dockerproject.org/repo ubuntu-{{ ansible_distribution_release }} main'
-      state=present
-
 - name: Import the docker-engine repository key of apt.dockerproject.org
   apt_key:
       id=2C52609D
       state=present
       url=https://apt.dockerproject.org/gpg
+
+- name: Add docker-engine apt repo (apt.dockerproject.org)
+  apt_repository:
+      repo='deb https://apt.dockerproject.org/repo ubuntu-{{ ansible_distribution_release }} main'
+      state=present
 
 - name: Test docker-engine installed
   shell: dpkg-query -W 'docker-engine' | grep 1.12.6-0~ubuntu-{{ ansible_distribution_release }}
@@ -38,13 +38,17 @@
   register: is_docker_engine
 
 - name: Clean apt cache for docker repository
-  shell: apt-get update --fix-missing; rm -vrf /var/lib/apt/lists/*; mkdir /var/lib/apt/lists/partial; apt-get clean -y
+  shell: "{{ item }}"
+  with_items:
+  - "apt-get clean"
+  - "rm -vrf /var/lib/apt/lists/*"
+  - "mkdir /var/lib/apt/lists/partial"
   sudo: yes
   when: is_docker_engine|failed
 
 - name: Update apt cache for docker repository
   ignore_errors: yes
-  shell: apt-get update || apt-get update
+  shell: apt-get update
   sudo: yes
   when: is_docker_engine|failed
 
