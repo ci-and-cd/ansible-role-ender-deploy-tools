@@ -9,28 +9,29 @@
 # curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 - name: Import the docker-ce repository key of download.docker.com
   apt_key:
-      id=0EBFCD88
-      state=present
-      url=https://download.docker.com/linux/ubuntu/gpg
+    id=0EBFCD88
+    state=present
+    url=https://download.docker.com/linux/ubuntu/gpg
 
 - name: Add docker-ce apt repo (download.docker.com)
   apt_repository:
-      repo='deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable'
-      state=present
+    repo='deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable'
+    state=present
+  ignore_errors: yes
   when: ansible_architecture == "x86_64"
 
 
 # Import the Docker apt repo and install Docker:
 - name: Import the docker-engine repository key of apt.dockerproject.org
   apt_key:
-      id=2C52609D
-      state=present
-      url=https://apt.dockerproject.org/gpg
+    id=2C52609D
+    state=present
+    url=https://apt.dockerproject.org/gpg
 
 - name: Add docker-engine apt repo (apt.dockerproject.org)
   apt_repository:
-      repo='deb https://apt.dockerproject.org/repo ubuntu-{{ ansible_distribution_release }} main'
-      state=present
+    repo='deb https://apt.dockerproject.org/repo ubuntu-{{ ansible_distribution_release }} main'
+    state=present
 
 - name: Test docker-engine installed
   shell: dpkg-query -W 'docker-engine' | grep 1.12.6-0~ubuntu-{{ ansible_distribution_release }}
