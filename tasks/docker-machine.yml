@@ -15,10 +15,10 @@
 # url: https://github.com/docker/machine/releases/download/<version>/docker-machine-`uname -s`-`uname -m`
 - name: Download docker-machine
   when: (install_docker_machine | bool) and ( not usr_local_sbin_docker_machine.stat.exists or docker_machine_miss_match )
-  shell: aria2c --file-allocation=none -c -x 10 -s 10 -m 0 --console-log-level=notice --log-level=notice --summary-interval=0 -d /usr/local/sbin -o docker-machine https://github.com/docker/machine/releases/download/v0.12.0/docker-machine-Linux-x86_64
+  shell: "aria2c --file-allocation=none -c -x 10 -s 10 -m 0 --console-log-level=notice --log-level=notice --summary-interval=0 -d /usr/local/sbin -o docker-machine {{ fileserver | default('https://github.com') }}/docker/machine/releases/download/v0.12.0/docker-machine-Linux-x86_64"
 #  get_url:
 #    checksum: sha256:C4568BB0B0F5A48B57D9D034A441F445004C81B69C2F571AEFCA46862400EAAF
-#    url: https://github.com/docker/machine/releases/download/v0.12.0/docker-machine-Linux-x86_64
+#    url: {{ fileserver | default('https://github.com') }}/docker/machine/releases/download/v0.12.0/docker-machine-Linux-x86_64
 #    dest: /usr/local/sbin/docker-machine
 #    mode: 0755
 #    timeout: 30

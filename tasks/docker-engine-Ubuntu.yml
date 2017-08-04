@@ -32,6 +32,7 @@
   apt_repository:
     repo='deb https://apt.dockerproject.org/repo ubuntu-{{ ansible_distribution_release }} main'
     state=present
+  ignore_errors: yes
 
 - name: Test docker-engine installed
   shell: dpkg-query -W 'docker-engine' | grep 1.12.6-0~ubuntu-{{ ansible_distribution_release }}
