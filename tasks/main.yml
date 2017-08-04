@@ -19,14 +19,14 @@
 # so at first we use python-pip to install docker-py library on all servers before installing the Docker:
 - name: Install pip
   easy_install:
-      name=pip
+    name=pip
 - name: Install docker-py
   pip:
-      state=present
-      name=docker
-      version=2.4.2
-      #name=docker-py
-      #version=1.10.6
+    state=present
+    name=docker
+    version=2.4.2
+    #name=docker-py
+    #version=1.10.6
 
 - include: "docker-engine-{{ ansible_distribution }}.yml"
   static: no
@@ -42,14 +42,14 @@
 # and it will copy template for Docker configuration then restart Docker.
 - name: Create a docker group
   group:
-      name=docker
-      state=present
+    name=docker
+    state=present
 
 - name: Add user(s) to docker group
   user:
-      name={{ item }}
-      group=docker
-      state=present
+    name={{ item }}
+    group=docker
+    state=present
   with_items: docker_users
   when: docker_users is defined
 

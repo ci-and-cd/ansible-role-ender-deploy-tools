@@ -28,6 +28,19 @@
   sudo: yes
   when: is_python_version_ok|failed
 
+- name: pip urllib3
+  pip:
+    name: urllib3
+- name: pip pyOpenSSL
+  pip:
+    name: pyOpenSSL
+- name: pip ndg-httpsclient
+  pip:
+    name: ndg-httpsclient
+- name: pip pyasn1
+  pip:
+    name: pyasn1
+
 ## Add apt keys
 #- name: add key for ppa python repository
 #  apt_key: keyserver=keyserver.ubuntu.com id=DB82666C state=present
