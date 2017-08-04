@@ -1,4 +1,26 @@
 ---
+- name: easy_install pip
+  easy_install:
+    executable: /usr/bin/easy_install
+    name: pip
+
+- name: pip urllib3
+  pip:
+    executable: /usr/bin/pip
+    name: urllib3
+- name: pip pyOpenSSL
+  pip:
+    executable: /usr/bin/pip
+    name: pyOpenSSL
+- name: pip ndg-httpsclient
+  pip:
+    executable: /usr/bin/pip
+    name: ndg-httpsclient
+- name: pip pyasn1
+  pip:
+    executable: /usr/bin/pip
+    name: pyasn1
+
 # see: https://github.com/ansible/ansible/issues/12161
 - name: find python version
   shell: python2 --version 2>&1 | awk '{print $2}' || python --version 2>&1 | awk '{print $2}'
@@ -27,19 +49,6 @@
   - "cd /tmp/Python-2.7.12 && ./configure && make install"
   sudo: yes
   when: is_python_version_ok|failed
-
-- name: pip urllib3
-  pip:
-    name: urllib3
-- name: pip pyOpenSSL
-  pip:
-    name: pyOpenSSL
-- name: pip ndg-httpsclient
-  pip:
-    name: ndg-httpsclient
-- name: pip pyasn1
-  pip:
-    name: pyasn1
 
 ## Add apt keys
 #- name: add key for ppa python repository
