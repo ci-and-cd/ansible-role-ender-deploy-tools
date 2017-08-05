@@ -86,11 +86,12 @@
 
 - name: ensure python2.7 python2.7-dev latest is installed
   shell: "{{ item }}"
-  whith_items:
+  with_items:
   - "apt-get install python2.7 python2.7-dev -y"
   become: yes
   become_user: root
   become_method: sudo
+  when: is_python_version_ok|failed
 
 # sudo add-apt-repository --remove ppa:fkrull/deadsnakes
 
