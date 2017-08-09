@@ -20,6 +20,12 @@
 - name: Install pip
   easy_install:
     name=pip
+  when: https_proxy is not defined or https_proxy == ""
+- name: Install pip
+  environment:
+    https_proxy: "{{ https_proxy }}"
+  shell: easy_install pip
+  when: https_proxy is defined and https_proxy != ""
 - name: Install docker-py
   pip:
     state=present
@@ -27,6 +33,12 @@
     version=2.4.2
     #name=docker-py
     #version=1.10.6
+  when: https_proxy is not defined or https_proxy == ""
+- name: Install docker-py
+  environment:
+    https_proxy: "{{ https_proxy }}"
+  shell: pip2 install docker==2.4.2
+  when: https_proxy is defined and https_proxy != ""
 
 - include: "docker-engine-{{ ansible_distribution }}.yml"
   static: no

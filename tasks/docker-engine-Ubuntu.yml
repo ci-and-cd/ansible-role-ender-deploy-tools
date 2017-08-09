@@ -12,6 +12,12 @@
     id=0EBFCD88
     state=present
     url=https://download.docker.com/linux/ubuntu/gpg
+  when: https_proxy is not defined or https_proxy == ""
+- name: Import the docker-ce repository key of download.docker.com
+  environment:
+    https_proxy: "{{ https_proxy }}"
+  shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+  when: https_proxy is defined and https_proxy != ""
 
 - name: Add docker-ce apt repo (download.docker.com)
   apt_repository:
@@ -28,12 +34,19 @@
     id=2C52609D
     state=present
     url=https://apt.dockerproject.org/gpg
+  when: https_proxy is not defined or https_proxy == ""
+- name: Import the docker-engine repository key of apt.dockerproject.org
+  environment:
+    https_proxy: "{{ https_proxy }}"
+  shell: curl -fsSL https://apt.dockerproject.org/gpg | apt-key add -
+  when: https_proxy is defined and https_proxy != ""
 
 - name: Add docker-engine apt repo (apt.dockerproject.org)
   apt_repository:
     repo='deb https://apt.dockerproject.org/repo ubuntu-{{ ansible_distribution_release }} main'
     state=present
   ignore_errors: yes
+  when: https_proxy is not defined or https_proxy == ""
 
 - name: Test docker-engine installed
   shell: dpkg-query -W 'docker-engine' | grep 1.12.6-0~ubuntu-{{ ansible_distribution_release }}
