@@ -22,6 +22,7 @@
 
 
 # Import the Docker apt repo and install Docker:
+# curl -fsSL https://apt.dockerproject.org/gpg | sudo apt-key add -
 - name: Import the docker-engine repository key of apt.dockerproject.org
   apt_key:
     id=2C52609D
