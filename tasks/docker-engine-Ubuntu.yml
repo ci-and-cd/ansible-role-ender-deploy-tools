@@ -12,6 +12,7 @@
     id=0EBFCD88
     state=present
     url=https://download.docker.com/linux/ubuntu/gpg
+  ignore_errors: yes
   when: https_proxy is not defined or https_proxy == ""
 - name: Import the docker-ce repository key of download.docker.com
   environment:
@@ -24,7 +25,14 @@
     repo='deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable'
     state=present
   ignore_errors: yes
-  when: ansible_architecture == "x86_64"
+  when: ansible_architecture == "x86_64" and (https_proxy is not defined or https_proxy == "")
+- name: Add docker-ce apt repo (download.docker.com)
+  environment:
+    https_proxy: "{{ https_proxy }}"
+  shell: "{{ item }}"
+  with_items:
+  - "add-apt-repository 'deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable'"
+  when: ansible_architecture == "x86_64" and (https_proxy is defined and https_proxy != "")
 
 
 # Import the Docker apt repo and install Docker:
@@ -47,6 +55,13 @@
     state=present
   ignore_errors: yes
   when: https_proxy is not defined or https_proxy == ""
+- name: Add docker-engine apt repo (apt.dockerproject.org)
+  environment:
+    https_proxy: "{{ https_proxy }}"
+  shell: "{{ item }}"
+  with_items:
+  - "add-apt-repository 'deb https://apt.dockerproject.org/repo ubuntu-{{ ansible_distribution_release }} main'"
+  when: https_proxy is defined and https_proxy != ""
 
 - name: Test docker-engine installed
   shell: dpkg-query -W 'docker-engine' | grep 1.12.6-0~ubuntu-{{ ansible_distribution_release }}
@@ -64,7 +79,7 @@
 
 - name: Update apt cache for docker repository
   ignore_errors: yes
-  shell: apt-get update
+  shell: apt-get update || apt-get update
   sudo: yes
   when: is_docker_engine|failed
 
