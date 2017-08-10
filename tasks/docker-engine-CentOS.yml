@@ -10,7 +10,7 @@
     gpgcheck: yes
 
 # find versions by `yum list available docker-engine --showduplicates`
-- name: Install docker-engine package
+- name: Install docker-engine package (yum install docker-engine-1.12.6)
   yum:
     name: docker-engine-1.12.6
     state: present

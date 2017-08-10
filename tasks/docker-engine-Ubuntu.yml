@@ -68,7 +68,7 @@
   sudo: yes
   when: is_docker_engine|failed
 
-- name: Install docker-engine package
+- name: Install docker-engine package (apt-get install 1.12.6-0~ubuntu-{{ ansible_distribution_release }})
   apt:
-      name=docker-engine=1.12.6-0~ubuntu-{{ ansible_distribution_release }}
-      #update_cache=yes
+    name=docker-engine=1.12.6-0~ubuntu-{{ ansible_distribution_release }}
+    #update_cache=yes
