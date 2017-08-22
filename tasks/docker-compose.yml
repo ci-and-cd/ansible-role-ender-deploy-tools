@@ -22,9 +22,15 @@
   #  timeout: 30
   shell: "{% if http_proxy is defined and http_proxy and fileserver is not defined %}http_proxy={{ http_proxy }} {% endif %}{% if https_proxy is defined and https_proxy and fileserver is not defined %}https_proxy={{ https_proxy }} {% endif %}aria2c --file-allocation=none -c -x 10 -s 10 -m 0 --console-log-level=notice --log-level=notice --summary-interval=0 -d /usr/local/sbin -o docker-compose {{ fileserver | default('https://github.com') }}/docker/compose/releases/download/1.13.0/docker-compose-Linux-x86_64"
   when: (install_docker_compose | bool) and ( not usr_local_sbin_docker_compose.stat.exists or docker_compose_miss_match )
+  become: yes
+  become_user: root
+  become_method: sudo
 
 - name: Install pip docker-compose
   pip:
-      state=present
-      name=docker-compose
-      version=1.13.0
+    state=present
+    name=docker-compose
+    version=1.13.0
+  become: yes
+  become_user: root
+  become_method: sudo

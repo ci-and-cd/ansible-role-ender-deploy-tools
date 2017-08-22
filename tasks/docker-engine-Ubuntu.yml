@@ -74,13 +74,11 @@
   - "apt-get clean"
   - "rm -vrf /var/lib/apt/lists/*"
   - "mkdir /var/lib/apt/lists/partial"
-  sudo: yes
   when: is_docker_engine|failed
 
 - name: Update apt cache for docker repository
   ignore_errors: yes
   shell: apt-get update || apt-get update
-  sudo: yes
   when: is_docker_engine|failed
 
 - name: Install docker-engine package (apt-get install docker-engine=1.12.6-0~ubuntu-{{ ansible_distribution_release }})

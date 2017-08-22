@@ -7,6 +7,9 @@
     gpgkey: https://getfedora.org/static/352C64E5.txt
     gpgcheck: yes
     # see: https://getfedora.org/keys/
+  become: yes
+  become_user: root
+  become_method: sudo
 
 - name: Install dependencies by yum
   yum:
@@ -20,3 +23,6 @@
   - python-devel
   - python-setuptools
   - yum-utils
+  become: yes
+  become_user: root
+  become_method: sudo

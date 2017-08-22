@@ -18,8 +18,6 @@
 
 - name: Start docker-engine service
   shell: systemctl start docker.service
-  sudo: yes
 
 - name: Enable docker-engine service
   shell: systemctl enable docker.service
-  sudo: yes

@@ -21,11 +21,17 @@
   easy_install:
     name=pip
   when: https_proxy is not defined or https_proxy == ""
+  become: yes
+  become_user: root
+  become_method: sudo
 - name: Install pip
   environment:
     https_proxy: "{{ https_proxy }}"
   shell: easy_install pip
   when: https_proxy is defined and https_proxy != ""
+  become: yes
+  become_user: root
+  become_method: sudo
 - name: Install docker-py
   pip:
     state=present
@@ -34,14 +40,23 @@
     #name=docker-py
     #version=1.10.6
   when: https_proxy is not defined or https_proxy == ""
+  become: yes
+  become_user: root
+  become_method: sudo
 - name: Install docker-py
   environment:
     https_proxy: "{{ https_proxy }}"
   shell: pip2 install docker==2.4.2
   when: https_proxy is defined and https_proxy != ""
+  become: yes
+  become_user: root
+  become_method: sudo
 
 - include: "docker-engine-{{ ansible_distribution }}.yml"
   static: no
+  become: yes
+  become_user: root
+  become_method: sudo
 
 - include: "docker-machine.yml"
   static: no
@@ -56,6 +71,9 @@
   group:
     name=docker
     state=present
+  become: yes
+  become_user: root
+  become_method: sudo
 
 - name: Add user(s) to docker group
   user:
@@ -64,8 +82,14 @@
     state=present
   with_items: docker_users
   when: docker_users is defined
+  become: yes
+  become_user: root
+  become_method: sudo
 
 - name: Create oss-network
   docker_network:
     name: oss-network
   when: create_oss_network
+  become: yes
+  become_user: root
+  become_method: sudo

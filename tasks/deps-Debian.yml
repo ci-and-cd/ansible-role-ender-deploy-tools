@@ -19,3 +19,6 @@
   - python-setuptools
   #- python-distutils-extra
   - software-properties-common
+  become: yes
+  become_user: root
+  become_method: sudo

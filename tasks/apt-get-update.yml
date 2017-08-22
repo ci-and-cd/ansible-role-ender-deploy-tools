@@ -6,8 +6,10 @@
   ignore_errors: yes
   register: apt_result
   retries: 2
-  sudo: yes
   until: apt_result|success
+  become: yes
+  become_user: root
+  become_method: sudo
 
 - name: Clean apt cache when apt module failed
   shell: "{{ item }}"
@@ -16,11 +18,15 @@
   - "apt-get clean"
   - "rm -vrf /var/lib/apt/lists/*"
   - "mkdir /var/lib/apt/lists/partial"
-  sudo: yes
   when: apt_result|failed
+  become: yes
+  become_user: root
+  become_method: sudo
 
 - name: Retry if needed using command apt-get update
   shell: apt-get update
   ignore_errors: yes
-  sudo: yes
   when: apt_result|failed
+  become: yes
+  become_user: root
+  become_method: sudo

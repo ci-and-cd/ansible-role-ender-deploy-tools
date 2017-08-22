@@ -36,18 +36,18 @@
 
 - name: add key for ppa python repository
   apt_key: keyserver=keyserver.ubuntu.com id=DB82666C state=present
+  when: is_python_version_ok|failed
   become: yes
   become_user: root
   become_method: sudo
-  when: is_python_version_ok|failed
 
 - name: Add ppa python repository
   apt_repository: repo='deb http://ppa.launchpad.net/fkrull/deadsnakes-python2.7/ubuntu {{ ansible_distribution_release }} main' state=present #update_cache=yes
+  ignore_errors: yes
+  when: is_python_version_ok|failed
   become: yes
   become_user: root
   become_method: sudo
-  ignore_errors: yes
-  when: is_python_version_ok|failed
 
 - name: Clean apt cache for ppa repository
   shell: "{{ item }}"
@@ -55,45 +55,49 @@
   - "apt-get clean"
   - "rm -vrf /var/lib/apt/lists/*"
   - "mkdir /var/lib/apt/lists/partial"
-  sudo: yes
   when: is_python_version_ok|failed
+  become: yes
+  become_user: root
+  become_method: sudo
 
 - name: Update apt cache for ppa repository
   ignore_errors: yes
   shell: apt-get update
-  sudo: yes
   when: is_python_version_ok|failed
+  become: yes
+  become_user: root
+  become_method: sudo
 
 - name: ensure python2.7 latest is installed
   apt:
     pkg: python2.7
     state: latest
     install_recommends: no
+  when: is_python_version_ok|failed
   become: yes
   become_user: root
   become_method: sudo
-  when: is_python_version_ok|failed
 
 - name: ensure python2.7-dev latest is installed
   apt:
     pkg: python2.7-dev
     state: latest
     install_recommends: no
+  when: is_python_version_ok|failed
   become: yes
   become_user: root
   become_method: sudo
-  when: is_python_version_ok|failed
 
 - name: ensure python2.7 python2.7-dev latest is installed
   shell: "{{ item }}"
   with_items:
   - "apt-get update"
   - "apt-get install python2.7 python2.7-dev -y"
+  ignore_errors: yes
+  when: is_python_version_ok|failed
   become: yes
   become_user: root
   become_method: sudo
-  ignore_errors: yes
-  when: is_python_version_ok|failed
 
 # sudo add-apt-repository --remove ppa:fkrull/deadsnakes
 
@@ -101,8 +105,10 @@
 #- name: Update apt cache for install python 2.7.12
 #  ignore_errors: yes
 #  shell: apt-get update
-#  sudo: yes
 #  when: is_python_version_ok|failed
+#  become: yes
+#  become_user: root
+#  become_method: sudo
 #
 #- name: install python 2.7.12
 #  shell: "{{ item }}"
@@ -111,8 +117,10 @@
 #  - "apt-get install libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev -y"
 #  - "curl SL- https://www.python.org/ftp/python/2.7.12/Python-2.7.12.tgz | tar xzv -C /tmp"
 #  - "cd /tmp/Python-2.7.12 && ./configure --enable-ipv6 && make install"
-#  sudo: yes
 #  when: is_python_version_ok|failed
+#  become: yes
+#  become_user: root
+#  become_method: sudo
 #
 #- name: python 2.7.12 setup
 #  shell: "{{ item }}"
