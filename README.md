@@ -1,17 +1,17 @@
 Role Name
 =========
 
-Install docker.
+Install ender deploy tools.
 
 Requirements
 ------------
 
-Ubuntu trusty (14.04), Ubuntu xenial (16.04), CentOS 7.
+Ubuntu xenial (16.04).
 
 Role Variables
 --------------
 
-TODO docker_version variable.
+- docker_version
 
 Dependencies
 ------------

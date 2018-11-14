@@ -30,7 +30,7 @@
   pip:
     state=present
     name=docker-compose
-    version=1.13.0
+    version=1.22.0
   become: yes
   become_user: root
   become_method: sudo

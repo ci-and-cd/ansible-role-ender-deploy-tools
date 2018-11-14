@@ -1,5 +1,5 @@
 ---
-# tasks file for oss-docker-install
+# tasks file for ender-deploy-tools
 
 #- name: Fail if OS distro is not Ubuntu 14.04
 #  fail:

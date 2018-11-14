@@ -1,6 +1,10 @@
 ---
-# defaults file for oss-docker-install
+# defaults file for ender-deploy-tools
 
+create_docker_local_network: no
+docker_apt_repository: https://download.docker.com/linux/ubuntu
+docker-compose_version: 1.22
+#docker-machine_version:
+docker_version: 18.06.1~ce~3-0
 install_docker_compose: yes
-install_docker_machine: yes
-create_oss_network: no
+install_docker_machine: no

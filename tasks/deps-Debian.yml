@@ -13,12 +13,18 @@
   with_items:
   - apt-transport-https
   - aria2
+  - bzip2
   - ca-certificates
   - curl
+  - git
+  - jq
   - python-dev
   - python-setuptools
   #- python-distutils-extra
   - software-properties-common
+  - tar
+  - unzip
+  - zip
   become: yes
   become_user: root
   become_method: sudo

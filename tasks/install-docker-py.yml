@@ -1,0 +1,24 @@
+---
+
+# The docker_container and docker_image module in Ansible
+# requires docker-py library to be installed on target hosts,
+# so we install python-pip and docker-py library on all servers before installing the Docker:
+- name: Install docker-py
+  pip:
+    state=present
+    name=docker
+    version=3.5.1
+    #name=docker-py
+    #version=1.10.6
+  when: https_proxy is not defined or https_proxy == ""
+  become: yes
+  become_user: root
+  become_method: sudo
+- name: Install docker-py
+  environment:
+    https_proxy: "{{ https_proxy }}"
+  shell: pip2 install docker==3.5.1
+  when: https_proxy is defined and https_proxy != ""
+  become: yes
+  become_user: root
+  become_method: sudo

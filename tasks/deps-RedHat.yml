@@ -18,11 +18,17 @@
   with_items:
   - device-mapper-persistent-data
   - aria2
+  - bzip2
   - curl
+  - git
+  - jq
   - lvm2
   - python-devel
   - python-setuptools
+  - tar
+  - unzip
   - yum-utils
+  - zip
   become: yes
   become_user: root
   become_method: sudo

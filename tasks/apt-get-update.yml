@@ -1,4 +1,18 @@
 ---
+- name: Copy docker apt repository gpg key
+  copy:
+    src: docker_ubuntu_gpg
+    dest: /tmp/docker_ubuntu_gpg
+
+- name: Add docker apt repository
+  shell: "{{ item }}"
+  with_items:
+  - "apt-key add /tmp/docker_ubuntu_gpg"
+  - "add-apt-repository \"deb [arch=amd64] {{ docker_apt_repository }} $(lsb_release -cs) stable\""
+  become: yes
+  become_user: root
+  become_method: sudo
+
 # see: https://github.com/ansible/ansible-modules-core/issues/2951
 - name: Update apt cache using apt module
   apt: update_cache=yes cache_valid_time=7200

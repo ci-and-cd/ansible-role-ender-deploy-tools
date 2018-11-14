@@ -1,0 +1,17 @@
+# ansible-playbook tests/main.yml --list-hosts
+# ansible-playbook tests/main.yml -vvv
+
+---
+- hosts: localhost
+  gather_facts: true
+  remote_user: vagrant
+  roles:
+    - { role: ender-deploy-tools,
+        create_docker_local_network: yes,
+        docker_apt_repository: "https://mirrors.tuna.tsinghua.edu.cn/docker-ce/linux/ubuntu",
+        docker-compose_version: 1.22,
+        docker-machine_version: 1,
+        docker_version: 18.06.1~ce~3-0,
+        install_docker_compose: yes,
+        install_docker_machine: no
+    }

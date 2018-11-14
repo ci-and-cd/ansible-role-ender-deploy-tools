@@ -7,89 +7,57 @@
   include_vars: "{{ ansible_os_family }}.yml"
 
 # Setup/install tasks.
-- include: "deps-{{ ansible_distribution }}-{{ ansible_distribution_release }}.yml"
-  static: no
-  when: ansible_distribution_release == "trusty"
+#- include: "deps-{{ ansible_distribution }}-{{ ansible_distribution_release }}.yml"
+#  static: no
+#  when: ansible_distribution_release == "trusty"
 
 - include: "deps-{{ ansible_os_family }}.yml"
   static: no
 
-# The docker_container and docker_image module in Ansible
-# requires docker-py library to be installed on the remote server,
-# so at first we use python-pip to install docker-py library on all servers before installing the Docker:
-- name: Install pip
-  easy_install:
-    name=pip
-  when: https_proxy is not defined or https_proxy == ""
-  become: yes
-  become_user: root
-  become_method: sudo
-- name: Install pip
-  environment:
-    https_proxy: "{{ https_proxy }}"
-  shell: easy_install pip
-  when: https_proxy is defined and https_proxy != ""
-  become: yes
-  become_user: root
-  become_method: sudo
-- name: Install docker-py
-  pip:
-    state=present
-    name=docker
-    version=2.4.2
-    #name=docker-py
-    #version=1.10.6
-  when: https_proxy is not defined or https_proxy == ""
-  become: yes
-  become_user: root
-  become_method: sudo
-- name: Install docker-py
-  environment:
-    https_proxy: "{{ https_proxy }}"
-  shell: pip2 install docker==2.4.2
-  when: https_proxy is defined and https_proxy != ""
-  become: yes
-  become_user: root
-  become_method: sudo
+#- include: "install-pip.yml"
+#  static: no
 
-- include: "docker-engine-{{ ansible_distribution }}.yml"
-  static: no
-  become: yes
-  become_user: root
-  become_method: sudo
+#- include: "install-docker-py.yml"
+#  static: no
 
-- include: "docker-machine.yml"
-  static: no
-
-- include: "docker-compose.yml"
-  static: no
-
-# Create a system group for Docker
-# and add any user defined in “docker_users” variable to this group,
-# and it will copy template for Docker configuration then restart Docker.
-- name: Create a docker group
-  group:
-    name=docker
-    state=present
-  become: yes
-  become_user: root
-  become_method: sudo
-
-- name: Add user(s) to docker group
-  user:
-    name={{ item }}
-    group=docker
-    state=present
-  with_items: docker_users
-  when: docker_users is defined
-  become: yes
-  become_user: root
-  become_method: sudo
-
-- name: Create oss-network
-  docker_network:
-    name: oss-network
-  when: create_oss_network
-  become: yes
-  become_user: root
-  become_method: sudo
+#- include: "docker-engine-{{ ansible_distribution }}.yml"
+#  static: no
+#  become: yes
+#  become_user: root
+#  become_method: sudo
+#
+#- include: "docker-machine.yml"
+#  static: no
+#
+#- include: "docker-compose.yml"
+#  static: no
+#
+## Create a system group for Docker
+## and add any user defined in “docker_users” variable to this group,
+## and it will copy template for Docker configuration then restart Docker.
+#- name: Create a docker group
+#  group:
+#    name=docker
+#    state=present
+#  become: yes
+#  become_user: root
+#  become_method: sudo
+#
+#- name: Add user(s) to docker group
+#  user:
+#    name={{ item }}
+#    group=docker
+#    state=present
+#  with_items: docker_users
+#  when: docker_users is defined
+#  become: yes
+#  become_user: root
+#  become_method: sudo
+#
+#- name: Create oss-network
+#  docker_network:
+#    name: oss-network
+#  when: create_docker_local_network
+#  become: yes
+#  become_user: root
+#  become_method: sudo
